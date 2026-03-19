@@ -1,0 +1,1944 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Senior-engineer-level research on tools, frameworks, and infrastructure.">
+      
+      
+      
+      
+        <link rel="prev" href="../03_subagent_test_implementation/">
+      
+      
+        <link rel="next" href="../05_legacy_codebase_onboarding/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Database Migration Generation with Approval Gates - Tool Research</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#database-migration-generation-with-approval-gates" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Tool Research" class="md-header__button md-logo" aria-label="Tool Research" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Tool Research
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Database Migration Generation with Approval Gates
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  CLAUDE-CODE
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../dbt/" class="md-tabs__link">
+          
+  
+  
+  DBT
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../git/" class="md-tabs__link">
+          
+  
+  
+  GIT
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Tool Research" class="md-nav__button md-logo" aria-label="Tool Research" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Tool Research
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLAUDE-CODE
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLAUDE-CODE
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_claude_md_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Md Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_context_aware_refactoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Aware Refactoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_subagent_test_implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subagent Test Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration Pipeline
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-initialize-the-project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Initialize the Project Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-claude-code-with-migration-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure Claude Code with Migration Permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-the-destructive-operation-detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Create the Destructive Operation Detector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-create-the-approval-workflow-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Create the Approval Workflow Scripts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_legacy_codebase_onboarding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy Codebase Onboarding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBT
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DBT
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/01_staging_layer_from_raw_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Staging Layer From Raw Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/02_incremental_event_stream_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incremental Event Stream Processing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/03_dimensional_model_star_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dimensional Model Star Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/04_custom_macros_cross_db_compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Macros Cross Db Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/05_ci_cd_slim_deployments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ci Cd Slim Deployments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GIT
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GIT
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/01_surgical_history_rewrite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Surgical History Rewrite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/02_untangling_diverged_branches/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Untangling Diverged Branches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/03_bisect_regression_hunting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bisect Regression Hunting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/04_monorepo_subtree_extraction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo Subtree Extraction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/05_worktree_parallel_development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worktree Parallel Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-initialize-the-project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Initialize the Project Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-claude-code-with-migration-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure Claude Code with Migration Permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-the-destructive-operation-detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Create the Destructive Operation Detector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-create-the-approval-workflow-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Create the Approval Workflow Scripts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="database-migration-generation-with-approval-gates">Database Migration Generation with Approval Gates</h1>
+<h2 id="overview">Overview</h2>
+<p>Database migrations are among the highest-risk automated operations in any system. A malformed migration can drop columns, truncate tables, or corrupt referential integrity—often irreversibly in production. This walkthrough demonstrates how to configure Claude Code to generate Prisma migrations from natural language schema change requests while enforcing strict approval workflows that prevent destructive operations from auto-executing.</p>
+<p>The pattern establishes three safety layers:
+1. <strong>Dry-run validation</strong> - Claude generates and analyzes migrations without applying them
+2. <strong>Destructive operation detection</strong> - Automatic flagging of DROP, TRUNCATE, and data-loss operations
+3. <strong>Human approval gates</strong> - Mandatory review checkpoints before any database modification</p>
+<p>This approach lets teams move fast on additive schema changes (new tables, nullable columns) while forcing deliberate review on anything that could lose data.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p><strong>Required installations:</strong>
+- Node.js 18+ 
+- PostgreSQL 14+ (local instance or Docker)
+- Claude Code CLI (<code>npm install -g @anthropic-ai/claude-code</code>)
+- Prisma CLI (<code>npm install -g prisma</code>)</p>
+<p><strong>Required knowledge:</strong>
+- Familiarity with Prisma schema syntax
+- Understanding of database migration concepts
+- Basic shell scripting</p>
+<p><strong>Environment setup:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># Verify installations</span>
+node<span class="w"> </span>--version<span class="w">    </span><span class="c1"># Should be 18+</span>
+psql<span class="w"> </span>--version<span class="w">    </span><span class="c1"># Should be 14+</span>
+claude<span class="w"> </span>--version<span class="w">  </span><span class="c1"># Claude Code CLI</span>
+npx<span class="w"> </span>prisma<span class="w"> </span>--version
+</code></pre></div></p>
+<p><strong>Database connection:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># Set up a local PostgreSQL database for this walkthrough</span>
+createdb<span class="w"> </span>migration_demo
+
+<span class="c1"># Export connection string</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql://localhost:5432/migration_demo&quot;</span>
+</code></pre></div></p>
+<h2 id="implementation">Implementation</h2>
+<h3 id="step-1-initialize-the-project-structure">Step 1: Initialize the Project Structure</h3>
+<p>We start by creating a project structure that separates concerns: schema definitions, generated migrations, and approval workflow state.</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>migration-gates/<span class="o">{</span>prisma,scripts,approvals,.claude<span class="o">}</span>
+<span class="nb">cd</span><span class="w"> </span>migration-gates
+npm<span class="w"> </span>init<span class="w"> </span>-y
+npm<span class="w"> </span>install<span class="w"> </span>prisma<span class="w"> </span>@prisma/client
+npm<span class="w"> </span>install<span class="w"> </span>--save-dev<span class="w"> </span>typescript<span class="w"> </span>@types/node<span class="w"> </span>ts-node
+</code></pre></div>
+<p>Create the initial Prisma schema representing a SaaS application's core tables:</p>
+<div class="highlight"><pre><span></span><code>// prisma/schema.prisma
+
+generator client {
+  provider = &quot;prisma-client-js&quot;
+}
+
+datasource db {
+  provider = &quot;postgresql&quot;
+  url      = env(&quot;DATABASE_URL&quot;)
+}
+
+// Core user management - established table structure
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String    @map(&quot;password_hash&quot;)
+  displayName   String?   @map(&quot;display_name&quot;)
+  createdAt     DateTime  @default(now()) @map(&quot;created_at&quot;)
+  updatedAt     DateTime  @updatedAt @map(&quot;updated_at&quot;)
+
+  // Relations
+  organizationMemberships OrganizationMember[]
+  auditLogs               AuditLog[]
+
+  @@map(&quot;users&quot;)
+}
+
+// Multi-tenant organization support
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  plan      String   @default(&quot;free&quot;) // free, pro, enterprise
+  createdAt DateTime @default(now()) @map(&quot;created_at&quot;)
+
+  members   OrganizationMember[]
+  projects  Project[]
+
+  @@map(&quot;organizations&quot;)
+}
+
+model OrganizationMember {
+  id             String       @id @default(uuid())
+  userId         String       @map(&quot;user_id&quot;)
+  organizationId String       @map(&quot;organization_id&quot;)
+  role           String       @default(&quot;member&quot;) // owner, admin, member
+  joinedAt       DateTime     @default(now()) @map(&quot;joined_at&quot;)
+
+  user           User         @relation(fields: [userId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([userId, organizationId])
+  @@map(&quot;organization_members&quot;)
+}
+
+model Project {
+  id             String       @id @default(uuid())
+  organizationId String       @map(&quot;organization_id&quot;)
+  name           String
+  description    String?
+  isArchived     Boolean      @default(false) @map(&quot;is_archived&quot;)
+  createdAt      DateTime     @default(now()) @map(&quot;created_at&quot;)
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@map(&quot;projects&quot;)
+}
+
+// Security audit trail
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map(&quot;user_id&quot;)
+  action    String   // user.login, project.create, etc.
+  resource  String   // Table/entity affected
+  resourceId String? @map(&quot;resource_id&quot;)
+  metadata  Json?    // Additional context
+  ipAddress String?  @map(&quot;ip_address&quot;)
+  createdAt DateTime @default(now()) @map(&quot;created_at&quot;)
+
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([resource, resourceId])
+  @@map(&quot;audit_logs&quot;)
+}
+</code></pre></div>
+<p>Initialize the database with this baseline:</p>
+<div class="highlight"><pre><span></span><code>npx<span class="w"> </span>prisma<span class="w"> </span>migrate<span class="w"> </span>dev<span class="w"> </span>--name<span class="w"> </span>initial_schema
+</code></pre></div>
+<h3 id="step-2-configure-claude-code-with-migration-permissions">Step 2: Configure Claude Code with Migration Permissions</h3>
+<p>The Claude Code settings file defines what operations Claude can perform autonomously versus what requires human approval. This is the critical safety configuration.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// .claude/settings.json</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;permissions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;allow&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="c1">// Claude can read any project files to understand context</span>
+<span class="w">      </span><span class="s2">&quot;Read(**)&quot;</span><span class="p">,</span>
+
+<span class="w">      </span><span class="c1">// Claude can modify Prisma schema files - this is the input to migration generation</span>
+<span class="w">      </span><span class="s2">&quot;Edit(prisma/schema.prisma)&quot;</span><span class="p">,</span>
+
+<span class="w">      </span><span class="c1">// Claude can create new migration analysis files</span>
+<span class="w">      </span><span class="s2">&quot;Write(approvals/**)&quot;</span><span class="p">,</span>
+
+<span class="w">      </span><span class="c1">// Claude can run Prisma commands in dry-run/diff mode only</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma migrate diff *)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma format)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma validate)&quot;</span><span class="p">,</span>
+
+<span class="w">      </span><span class="c1">// Claude can run our analysis scripts</span>
+<span class="w">      </span><span class="s2">&quot;Shell(node scripts/analyze-migration.js *)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(./scripts/check-destructive.sh *)&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;deny&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="c1">// NEVER allow direct migration execution - this is the core safety gate</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma migrate dev *)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma migrate deploy *)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma migrate reset *)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(npx prisma db push *)&quot;</span><span class="p">,</span>
+
+<span class="w">      </span><span class="c1">// Prevent direct database access that could bypass migrations</span>
+<span class="w">      </span><span class="s2">&quot;Shell(psql *)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Shell(pg_dump *)&quot;</span><span class="p">,</span>
+
+<span class="w">      </span><span class="c1">// Prevent modification of safety infrastructure</span>
+<span class="w">      </span><span class="s2">&quot;Edit(.claude/**)&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;Edit(scripts/**)&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;settings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;claude-sonnet-4-20250514&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;maxTokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8192</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The key insight here: Claude has full permission to <em>generate</em> and <em>analyze</em> migrations, but zero permission to <em>apply</em> them. This creates an inherent approval gate—the human must run the final migration command.</p>
+<h3 id="step-3-create-the-destructive-operation-detector">Step 3: Create the Destructive Operation Detector</h3>
+<p>This script parses Prisma's migration diff output and categorizes operations by risk level. It's intentionally conservative—false positives (flagging safe operations) are acceptable; false negatives (missing dangerous ones) are not.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// scripts/analyze-migration.js</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">fs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+
+<span class="c1">// Risk classification for different SQL operations</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">RISK_LEVELS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">CRITICAL</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">patterns</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="sr">/DROP\s+TABLE/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/TRUNCATE/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/DELETE\s+FROM\s+\w+\s*;/i</span><span class="p">,</span><span class="w">  </span><span class="c1">// DELETE without WHERE</span>
+<span class="w">      </span><span class="sr">/DROP\s+DATABASE/i</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Data loss - requires explicit approval and backup verification&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">autoApprove</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">requiresBackup</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">HIGH</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">patterns</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="sr">/DROP\s+COLUMN/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/ALTER\s+COLUMN.*TYPE/i</span><span class="p">,</span><span class="w">      </span><span class="c1">// Type changes can truncate data</span>
+<span class="w">      </span><span class="sr">/ALTER\s+COLUMN.*NOT\s+NULL/i</span><span class="p">,</span><span class="w"> </span><span class="c1">// Adding NOT NULL can fail on existing data</span>
+<span class="w">      </span><span class="sr">/DROP\s+INDEX/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/DROP\s+CONSTRAINT/i</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Potential data loss or breaking change - requires review&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">autoApprove</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">requiresBackup</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">MEDIUM</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">patterns</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="sr">/RENAME\s+COLUMN/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/RENAME\s+TABLE/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/ALTER\s+COLUMN.*DEFAULT/i</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Schema change may affect application code&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">autoApprove</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">requiresBackup</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">LOW</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">patterns</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="sr">/CREATE\s+TABLE/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/ADD\s+COLUMN/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/CREATE\s+INDEX/i</span><span class="p">,</span>
+<span class="w">      </span><span class="sr">/CREATE\s+UNIQUE\s+INDEX/i</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Additive change - generally safe&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">autoApprove</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">requiresBackup</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">analyzeMigrationSQL</span><span class="p">(</span><span class="nx">sql</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">findings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sql</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">lineNum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">lineNum</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">lines</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">lineNum</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">lines</span><span class="p">[</span><span class="nx">lineNum</span><span class="p">].</span><span class="nx">trim</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">line</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">line</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">level</span><span class="p">,</span><span class="w"> </span><span class="nx">config</span><span class="p">]</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">RISK_LEVELS</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">pattern</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">config</span><span class="p">.</span><span class="nx">patterns</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pattern</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">line</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">findings</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+<span class="w">            </span><span class="nx">level</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">line</span><span class="o">:</span><span class="w"> </span><span class="nx">lineNum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">statement</span><span class="o">:</span><span class="w"> </span><span class="nx">line</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">line</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;...&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="nx">config</span><span class="p">.</span><span class="nx">description</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">autoApprove</span><span class="o">:</span><span class="w"> </span><span class="nx">config</span><span class="p">.</span><span class="nx">autoApprove</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">requiresBackup</span><span class="o">:</span><span class="w"> </span><span class="nx">config</span><span class="p">.</span><span class="nx">requiresBackup</span><span class="p">,</span>
+<span class="w">          </span><span class="p">});</span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="c1">// Only report first matching pattern per line</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">findings</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">generateApprovalManifest</span><span class="p">(</span><span class="nx">findings</span><span class="p">,</span><span class="w"> </span><span class="nx">migrationName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">criticalCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">findings</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">f</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">f</span><span class="p">.</span><span class="nx">level</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;CRITICAL&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">highCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">findings</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">f</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">f</span><span class="p">.</span><span class="nx">level</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;HIGH&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">requiresApproval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">findings</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">f</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nx">f</span><span class="p">.</span><span class="nx">autoApprove</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">requiresBackup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">findings</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">f</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">f</span><span class="p">.</span><span class="nx">requiresBackup</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">manifest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">migrationName</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">analyzedAt</span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">(),</span>
+<span class="w">    </span><span class="nx">summary</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">totalOperations</span><span class="o">:</span><span class="w"> </span><span class="nx">findings</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">criticalCount</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">highCount</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">requiresApproval</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">requiresBackup</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">findings</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">approvalStatus</span><span class="o">:</span><span class="w"> </span><span class="nx">requiresApproval</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;PENDING&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;AUTO_APPROVED&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">approvedBy</span><span class="o">:</span><span class="w"> </span><span class="nx">requiresApproval</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;system&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">approvedAt</span><span class="o">:</span><span class="w"> </span><span class="nx">requiresApproval</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">manifest</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Main execution</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">migrationSQL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">[</span><span class="mf">2</span><span class="p">],</span><span class="w"> </span><span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">migrationName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">path</span><span class="p">.</span><span class="nx">basename</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">[</span><span class="mf">2</span><span class="p">],</span><span class="w"> </span><span class="s1">&#39;.sql&#39;</span><span class="p">);</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">findings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">analyzeMigrationSQL</span><span class="p">(</span><span class="nx">migrationSQL</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">manifest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">generateApprovalManifest</span><span class="p">(</span><span class="nx">findings</span><span class="p">,</span><span class="w"> </span><span class="nx">migrationName</span><span class="p">);</span>
+
+<span class="c1">// Write approval manifest</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`approvals/</span><span class="si">${</span><span class="nx">migrationName</span><span class="si">}</span><span class="sb">.json`</span><span class="p">;</span>
+<span class="nx">fs</span><span class="p">.</span><span class="nx">mkdirSync</span><span class="p">(</span><span class="s1">&#39;approvals&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">recursive</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span><span class="p">(</span><span class="nx">outputPath</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">manifest</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">));</span>
+
+<span class="c1">// Output summary for Claude to read</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;\n=== MIGRATION ANALYSIS REPORT ===\n&#39;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Migration: </span><span class="si">${</span><span class="nx">migrationName</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Total operations: </span><span class="si">${</span><span class="nx">findings</span><span class="p">.</span><span class="nx">length</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Critical: </span><span class="si">${</span><span class="nx">manifest</span><span class="p">.</span><span class="nx">summary</span><span class="p">.</span><span class="nx">criticalCount</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`High risk: </span><span class="si">${</span><span class="nx">manifest</span><span class="p">.</span><span class="nx">summary</span><span class="p">.</span><span class="nx">highCount</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Requires approval: </span><span class="si">${</span><span class="nx">manifest</span><span class="p">.</span><span class="nx">summary</span><span class="p">.</span><span class="nx">requiresApproval</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Requires backup: </span><span class="si">${</span><span class="nx">manifest</span><span class="p">.</span><span class="nx">summary</span><span class="p">.</span><span class="nx">requiresBackup</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">findings</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;\nDetailed findings:&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">findings</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">f</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`\n</span><span class="si">${</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="si">}</span><span class="sb">. [</span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">level</span><span class="si">}</span><span class="sb">] Line </span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">line</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`   Statement: </span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">statement</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`   </span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">description</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">manifest</span><span class="p">.</span><span class="nx">summary</span><span class="p">.</span><span class="nx">requiresApproval</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;\n⚠️  THIS MIGRATION REQUIRES HUMAN APPROVAL&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Approval manifest written to: </span><span class="si">${</span><span class="nx">outputPath</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Review the manifest and run: ./scripts/approve-migration.sh &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">migrationName</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Non-zero exit signals Claude that approval is needed</span>
+<span class="p">}</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;\n✅ Migration auto-approved (additive changes only)&#39;</span><span class="p">);</span>
+<span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="step-4-create-the-approval-workflow-scripts">Step 4: Create the Approval Workflow Scripts</h3>
+<p>These scripts manage the human approval process and ensure migrations can only be applied after explicit sign-off.</p>
+<p>```bash</p>
+<h1 id="binbash">!/bin/bash</h1>
+<h1 id="scriptsapprove-migrationsh">scripts/approve-migration.sh</h1>
+<p>set -e</p>
+<p>MIGRATION_NAME=$1
+MANIFEST_PATH="approvals/${MIGRATION_NAME}.json"</p>
+<p>if [ -z "$MIGRATION_NAME" ]; then
+    echo "Usage: ./scripts/approve-migration.sh <migration-name>"
+    exit 1
+fi</p>
+<p>if [ ! -f "$MANIFEST_PATH" ]; then
+    echo "Error: Approval manifest not found at $MANIFEST_PATH"
+    echo "Run migration analysis first."
+    exit 1
+fi</p>
+<h1 id="display-the-manifest-for-review">Display the manifest for review</h1>
+<p>echo "=== MIGRATION APPROVAL REQUEST ==="
+echo ""
+cat "$MANIFEST_PATH" | j</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
