@@ -29,6 +29,13 @@ pip install -r requirements.txt
 # 2. Set API keys
 export ANTHROPIC_API_KEY=sk-ant-...
 export TAVILY_API_KEY=tvly-...     # or BRAVE_API_KEY / SERPER_API_KEY
+
+# 3. Using virtual env
+cd /Users/elinora/my_git_repos/researcher
+python3 -m venv .venv
+source .venv/bin/activate
+pip install anthropic
+python main.py
 ```
 
 ## Usage

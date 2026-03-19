@@ -1,0 +1,2136 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Senior-engineer-level research on tools, frameworks, and infrastructure.">
+      
+      
+      
+      
+        <link rel="prev" href="../../sources/">
+      
+      
+        <link rel="next" href="../02_context_aware_refactoring/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Designing a Hierarchical CLAUDE.md System for a Monorepo - Tool Research</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#designing-a-hierarchical-claudemd-system-for-a-monorepo" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Tool Research" class="md-header__button md-logo" aria-label="Tool Research" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Tool Research
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Designing a Hierarchical CLAUDE.md System for a Monorepo
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  CLAUDE-CODE
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../dbt/" class="md-tabs__link">
+          
+  
+  
+  DBT
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../git/" class="md-tabs__link">
+          
+  
+  
+  GIT
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Tool Research" class="md-nav__button md-logo" aria-label="Tool Research" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Tool Research
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLAUDE-CODE
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLAUDE-CODE
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Md Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Md Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-establish-the-root-claudemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Establish the Root CLAUDE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-api-server-claudemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Create the API Server CLAUDE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-layer-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Layer Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Service Layer Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Patterns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-in-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling in Routes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background Jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Utilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#component-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ui-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_context_aware_refactoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Aware Refactoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_subagent_test_implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subagent Test Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_migration_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_legacy_codebase_onboarding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy Codebase Onboarding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBT
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DBT
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/01_staging_layer_from_raw_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Staging Layer From Raw Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/02_incremental_event_stream_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incremental Event Stream Processing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/03_dimensional_model_star_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dimensional Model Star Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/04_custom_macros_cross_db_compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Macros Cross Db Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dbt/examples/05_ci_cd_slim_deployments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ci Cd Slim Deployments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GIT
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GIT
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/01_surgical_history_rewrite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Surgical History Rewrite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/02_untangling_diverged_branches/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Untangling Diverged Branches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/03_bisect_regression_hunting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bisect Regression Hunting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/04_monorepo_subtree_extraction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo Subtree Extraction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/examples/05_worktree_parallel_development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worktree Parallel Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-establish-the-root-claudemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Establish the Root CLAUDE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-api-server-claudemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Create the API Server CLAUDE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-layer-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Layer Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Service Layer Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Patterns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-in-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling in Routes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background Jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Utilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#component-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ui-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="designing-a-hierarchical-claudemd-system-for-a-monorepo">Designing a Hierarchical CLAUDE.md System for a Monorepo</h1>
+<h2 id="overview">Overview</h2>
+<p>When working with Claude Code in a monorepo, you'll quickly discover that a single <code>CLAUDE.md</code> file at the root becomes either too generic to be useful or too bloated with package-specific details. The solution is a hierarchical system where Claude automatically inherits context as it navigates your codebase.</p>
+<p>This walkthrough demonstrates how to structure <code>CLAUDE.md</code> files across a TypeScript monorepo containing a React frontend, a Node.js API server, and shared packages. You'll learn how to encode coding standards, API patterns, and test conventions so Claude produces consistent, idiomatic code regardless of which package it's working in.</p>
+<p>The key insight: Claude Code reads <code>CLAUDE.md</code> files from the current working directory and its ancestors. By placing progressively more specific guidance at each level, you create a context system that scales with your codebase.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>A monorepo using npm/yarn/pnpm workspaces or Turborepo</li>
+<li>Basic familiarity with Claude Code and the <code>CLAUDE.md</code> convention</li>
+<li>Node.js 18+ and TypeScript 5+</li>
+<li>Understanding of your team's existing coding conventions (we'll encode them)</li>
+</ul>
+<p>The example assumes this directory structure (we'll create the <code>CLAUDE.md</code> files):</p>
+<div class="highlight"><pre><span></span><code>meridian-platform/
+├── package.json
+├── turbo.json
+├── packages/
+│   ├── api-server/
+│   ├── web-client/
+│   ├── shared-types/
+│   └── database/
+└── tools/
+    └── scripts/
+</code></pre></div>
+<h2 id="implementation">Implementation</h2>
+<h3 id="step-1-establish-the-root-claudemd">Step 1: Establish the Root CLAUDE.md</h3>
+<p>The root file defines organization-wide standards and provides Claude with the mental model of your system. This file should answer: "What kind of codebase is this, and what patterns apply everywhere?"</p>
+<p>Create <code>meridian-platform/CLAUDE.md</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gh"># Meridian Platform</span>
+
+<span class="gu">## System Overview</span>
+
+Meridian is a B2B logistics platform. The monorepo contains:
+<span class="k">-</span><span class="w"> </span><span class="sb">`packages/api-server`</span> - Express + tRPC API serving mobile and web clients
+<span class="k">-</span><span class="w"> </span><span class="sb">`packages/web-client`</span> - React 18 SPA with TanStack Query
+<span class="k">-</span><span class="w"> </span><span class="sb">`packages/shared-types`</span> - Zod schemas and TypeScript types shared across packages
+<span class="k">-</span><span class="w"> </span><span class="sb">`packages/database`</span> - Drizzle ORM schema and migrations
+
+<span class="gu">## Universal Coding Standards</span>
+
+<span class="gu">### TypeScript Configuration</span>
+<span class="k">-</span><span class="w"> </span>Strict mode is enabled everywhere. Never use <span class="sb">`any`</span> - prefer <span class="sb">`unknown`</span> with type guards.
+<span class="k">-</span><span class="w"> </span>Use <span class="sb">`satisfies`</span> for type-safe object literals: <span class="sb">`const config = { ... } satisfies Config`</span>
+<span class="k">-</span><span class="w"> </span>Prefer <span class="sb">`interface`</span> for object shapes, <span class="sb">`type`</span> for unions and intersections.
+
+<span class="gu">### Import Organization</span>
+All files use this import order (enforced by ESLint):
+<span class="k">1.</span> Node built-ins (<span class="sb">`node:fs`</span>, <span class="sb">`node:path`</span>)
+<span class="k">2.</span> External packages
+<span class="k">3.</span> Internal packages (<span class="sb">`@meridian/shared-types`</span>, <span class="sb">`@meridian/database`</span>)
+<span class="k">4.</span> Relative imports
+
+<span class="gu">### Error Handling</span>
+<span class="k">-</span><span class="w"> </span>Domain errors extend <span class="sb">`MeridianError`</span> from <span class="sb">`@meridian/shared-types`</span>
+<span class="k">-</span><span class="w"> </span>Never throw raw strings or generic <span class="sb">`Error`</span> instances
+<span class="k">-</span><span class="w"> </span>All async functions that can fail return <span class="sb">`Result&lt;T, E&gt;`</span> from <span class="sb">`neverthrow`</span>
+
+<span class="gu">### Naming Conventions</span>
+<span class="k">-</span><span class="w"> </span>Files: <span class="sb">`kebab-case.ts`</span> for modules, <span class="sb">`PascalCase.tsx`</span> for React components
+<span class="k">-</span><span class="w"> </span>Database tables: <span class="sb">`snake_case`</span> (e.g., <span class="sb">`shipment_tracking_events`</span>)
+<span class="k">-</span><span class="w"> </span>API routes: <span class="sb">`kebab-case`</span> (e.g., <span class="sb">`/api/shipments/tracking-events`</span>)
+<span class="k">-</span><span class="w"> </span>Environment variables: <span class="sb">`SCREAMING_SNAKE_CASE`</span> with <span class="sb">`MERIDIAN_`</span> prefix
+
+<span class="gu">## Package Dependencies</span>
+
+When adding dependencies:
+<span class="k">-</span><span class="w"> </span>Shared runtime deps go in <span class="sb">`packages/shared-types`</span>
+<span class="k">-</span><span class="w"> </span>Dev tools (testing, linting) are hoisted to root
+<span class="k">-</span><span class="w"> </span>Never install different versions of the same package across workspaces
+
+<span class="gu">## Git Conventions</span>
+
+Commit messages follow Conventional Commits:
+<span class="k">-</span><span class="w"> </span><span class="sb">`feat(api-server): add shipment consolidation endpoint`</span>
+<span class="k">-</span><span class="w"> </span><span class="sb">`fix(web-client): handle null carrier in tracking display`</span>
+<span class="k">-</span><span class="w"> </span><span class="sb">`chore(database): add index for shipment lookup by customer`</span>
+
+<span class="gu">## Testing Philosophy</span>
+
+<span class="k">-</span><span class="w"> </span>Unit tests live next to source files: <span class="sb">`shipment.service.ts`</span> → <span class="sb">`shipment.service.test.ts`</span>
+<span class="k">-</span><span class="w"> </span>Integration tests go in <span class="sb">`__tests__/integration/`</span> within each package
+<span class="k">-</span><span class="w"> </span>Use <span class="sb">`vitest`</span> everywhere, not Jest
+</code></pre></div>
+<p><strong>Why this structure matters</strong>: Claude will read this file when working anywhere in the repo. By establishing the mental model upfront ("B2B logistics platform"), Claude makes better naming choices and understands domain concepts. The universal standards prevent inconsistencies that creep in when Claude works across packages.</p>
+<h3 id="step-2-create-the-api-server-claudemd">Step 2: Create the API Server CLAUDE.md</h3>
+<p>This file inherits the root context and adds backend-specific patterns. It should answer: "How do we build APIs in this codebase?"</p>
+<p>Create <code>packages/api-server/CLAUDE.md</code>:</p>
+<p><div class="highlight"><pre><span></span><code><span class="gh"># API Server</span>
+
+Inherits from root CLAUDE.md. This document covers backend-specific patterns.
+
+<span class="gu">## Architecture</span>
+</code></pre></div>
+src/
+├── routes/           # tRPC routers, one per domain
+├── services/         # Business logic, no HTTP awareness
+├── repositories/     # Database access via Drizzle
+├── middleware/       # Express and tRPC middleware
+├── jobs/             # Background job processors (BullMQ)
+└── utils/            # Server-specific utilities
+<div class="highlight"><pre><span></span><code>## tRPC Patterns
+
+### Router Definition
+Every router follows this structure:
+
+```typescript
+// src/routes/shipments.router.ts
+import { router, protectedProcedure } from &#39;../trpc&#39;;
+import { shipmentService } from &#39;../services/shipment.service&#39;;
+import { 
+  CreateShipmentInput, 
+  ShipmentId 
+} from &#39;@meridian/shared-types&#39;;
+
+export const shipmentsRouter = router({
+  // Query procedures are for reads
+  getById: protectedProcedure
+    .input(ShipmentId)
+    .query(async ({ input, ctx }) =&gt; {
+      // Services receive the authenticated user from context
+      return shipmentService.getById(input, ctx.user);
+    }),
+
+  // Mutation procedures are for writes
+  create: protectedProcedure
+    .input(CreateShipmentInput)
+    .mutation(async ({ input, ctx }) =&gt; {
+      return shipmentService.create(input, ctx.user);
+    }),
+});
+</code></pre></div></p>
+<h3 id="input-validation">Input Validation</h3>
+<ul>
+<li>All inputs use Zod schemas from <code>@meridian/shared-types</code></li>
+<li>Never define schemas inline in routers - import them</li>
+<li>Add <code>.describe()</code> to schema fields for OpenAPI generation</li>
+</ul>
+<h2 id="service-layer-patterns">Service Layer Patterns</h2>
+<p>Services contain business logic and orchestrate repositories:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// src/services/shipment.service.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Result</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;neverthrow&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ShipmentNotFoundError</span><span class="p">,</span><span class="w"> </span><span class="nx">UnauthorizedError</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@meridian/shared-types&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">shipmentRepo</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../repositories/shipment.repo&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trackingService</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./tracking.service&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nx">ShipmentService</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">getById</span><span class="p">(</span>
+<span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="nx">user</span><span class="o">:</span><span class="w"> </span><span class="kt">AuthenticatedUser</span>
+<span class="w">  </span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Result</span><span class="o">&lt;</span><span class="nx">Shipment</span><span class="p">,</span><span class="w"> </span><span class="nx">ShipmentNotFoundError</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">UnauthorizedError</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">shipment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">shipmentRepo</span><span class="p">.</span><span class="nx">findById</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">shipment</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">ShipmentNotFoundError</span><span class="p">(</span><span class="nx">id</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Business rule: users can only view shipments from their organization</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">shipment</span><span class="p">.</span><span class="nx">organizationId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">UnauthorizedError</span><span class="p">(</span><span class="s1">&#39;shipment&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">ok</span><span class="p">(</span><span class="nx">shipment</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Export singleton instance, not class</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">shipmentService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ShipmentService</span><span class="p">();</span>
+</code></pre></div>
+<h3 id="service-rules">Service Rules</h3>
+<ul>
+<li>Services never import from <code>routes/</code> or access <code>Request</code>/<code>Response</code></li>
+<li>Services receive already-validated inputs (trust the router layer)</li>
+<li>Business rule violations return domain errors, not HTTP errors</li>
+<li>Log at service level using <code>ctx.logger</code>, not <code>console.log</code></li>
+</ul>
+<h2 id="repository-patterns">Repository Patterns</h2>
+<p>Repositories abstract Drizzle queries:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// src/repositories/shipment.repo.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">db</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@meridian/database&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">shipments</span><span class="p">,</span><span class="w"> </span><span class="nx">shipmentItems</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@meridian/database/schema&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">eq</span><span class="p">,</span><span class="w"> </span><span class="nx">and</span><span class="p">,</span><span class="w"> </span><span class="nx">gte</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;drizzle-orm&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nx">ShipmentRepository</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">findById</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Use query builder for complex queries with relations</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">shipments</span><span class="p">.</span><span class="nx">findFirst</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">where</span><span class="o">:</span><span class="w"> </span><span class="kt">eq</span><span class="p">(</span><span class="nx">shipments</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">),</span>
+<span class="w">      </span><span class="kd">with</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">trackingEvents</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">orderBy</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">events</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">desc</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="nx">desc</span><span class="p">(</span><span class="nx">events</span><span class="p">.</span><span class="nx">occurredAt</span><span class="p">)],</span>
+<span class="w">          </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">findByOrganization</span><span class="p">(</span><span class="nx">orgId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">since</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Use select builder for simpler queries</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">db</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">select</span><span class="p">()</span>
+<span class="w">      </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="nx">shipments</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span>
+<span class="w">        </span><span class="nx">and</span><span class="p">(</span>
+<span class="w">          </span><span class="nx">eq</span><span class="p">(</span><span class="nx">shipments</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span><span class="w"> </span><span class="nx">orgId</span><span class="p">),</span>
+<span class="w">          </span><span class="nx">gte</span><span class="p">(</span><span class="nx">shipments</span><span class="p">.</span><span class="nx">createdAt</span><span class="p">,</span><span class="w"> </span><span class="nx">since</span><span class="p">)</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">shipmentRepo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ShipmentRepository</span><span class="p">();</span>
+</code></pre></div>
+<h2 id="error-handling-in-routes">Error Handling in Routes</h2>
+<p>Transform domain errors to tRPC errors at the router boundary:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// src/middleware/error-handler.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">TRPCError</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@trpc/server&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">MeridianError</span><span class="p">,</span><span class="w"> </span><span class="nx">NotFoundError</span><span class="p">,</span><span class="w"> </span><span class="nx">UnauthorizedError</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@meridian/shared-types&#39;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">toTRPCError</span><span class="p">(</span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="kt">MeridianError</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">TRPCError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">NotFoundError</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TRPCError</span><span class="p">({</span><span class="w"> </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;NOT_FOUND&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">error.message</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">UnauthorizedError</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TRPCError</span><span class="p">({</span><span class="w"> </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;FORBIDDEN&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">error.message</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// Log unexpected errors, return generic message to client</span>
+<span class="w">  </span><span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TRPCError</span><span class="p">({</span><span class="w"> </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;INTERNAL_SERVER_ERROR&#39;</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="background-jobs">Background Jobs</h2>
+<p>Use BullMQ for async processing:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// src/jobs/tracking-sync.job.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Job</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;bullmq&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trackingSyncQueue</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../queues&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trackingService</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../services/tracking.service&#39;</span><span class="p">;</span>
+
+<span class="c1">// Job processor - handles individual jobs</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processTrackingSync</span><span class="p">(</span><span class="nx">job</span><span class="o">:</span><span class="w"> </span><span class="kt">Job</span><span class="o">&lt;</span><span class="nx">TrackingSyncPayload</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">shipmentId</span><span class="p">,</span><span class="w"> </span><span class="nx">carrierId</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">job</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">trackingService</span><span class="p">.</span><span class="nx">syncFromCarrier</span><span class="p">(</span><span class="nx">shipmentId</span><span class="p">,</span><span class="w"> </span><span class="nx">carrierId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Return value is stored as job result</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">syncedAt</span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// Job scheduler - called from services</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">scheduleTrackingSync</span><span class="p">(</span><span class="nx">shipmentId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">carrierId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">trackingSyncQueue</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span>
+<span class="w">    </span><span class="s1">&#39;sync-tracking&#39;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Job name for debugging</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">shipmentId</span><span class="p">,</span><span class="w"> </span><span class="nx">carrierId</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">delay</span><span class="o">:</span><span class="w"> </span><span class="kt">5000</span><span class="p">,</span><span class="w">           </span><span class="c1">// Start after 5 seconds</span>
+<span class="w">      </span><span class="nx">attempts</span><span class="o">:</span><span class="w"> </span><span class="kt">3</span><span class="p">,</span><span class="w">           </span><span class="c1">// Retry up to 3 times</span>
+<span class="w">      </span><span class="nx">backoff</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;exponential&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">delay</span><span class="o">:</span><span class="w"> </span><span class="kt">10000</span><span class="p">,</span><span class="w">        </span><span class="c1">// 10s, 20s, 40s between retries</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="testing">Testing</h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run all API tests</span>
+pnpm<span class="w"> </span>--filter<span class="w"> </span>api-server<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Run specific test file</span>
+pnpm<span class="w"> </span>--filter<span class="w"> </span>api-server<span class="w"> </span><span class="nb">test</span><span class="w"> </span>shipment.service.test.ts
+
+<span class="c1"># Run with coverage</span>
+pnpm<span class="w"> </span>--filter<span class="w"> </span>api-server<span class="w"> </span>test:coverage
+</code></pre></div>
+<h3 id="test-utilities">Test Utilities</h3>
+<ul>
+<li>Use <code>createTestContext()</code> from <code>src/test-utils/context.ts</code> for router tests</li>
+<li>Use <code>createMockUser()</code> from <code>src/test-utils/fixtures.ts</code> for auth mocking</li>
+<li>Database tests use transactions that rollback: <code>withTestTransaction(async (tx) =&gt; { ... })</code>
+<div class="highlight"><pre><span></span><code>**Why this depth of detail**: Claude struggles most with &quot;glue code&quot; - the patterns connecting layers. By showing exactly how routers call services, services call repositories, and errors transform between layers, Claude can implement new features that fit the existing architecture.
+
+### Step 3: Create the Web Client CLAUDE.md
+
+Create `packages/web-client/CLAUDE.md`:
+
+```markdown
+# Web Client
+
+Inherits from root CLAUDE.md. This document covers React frontend patterns.
+
+## Architecture
+</code></pre></div>
+src/
+├── components/        # Shared UI components
+│   ├── ui/           # Primitives (Button, Input, Modal)
+│   └── domain/       # Business components (ShipmentCard, TrackingTimeline)
+├── features/         # Feature modules with co-located code
+│   ├── shipments/
+│   ├── tracking/
+│   └── settings/
+├── hooks/            # Shared React hooks
+├── lib/              # Utilities (api client, date formatting)
+└── routes/           # TanStack Router route definitions
+```</li>
+</ul>
+<h2 id="component-patterns">Component Patterns</h2>
+<h3 id="ui-components">UI Components</h3>
+<p>Primitives use CVA (class-variance-authority) for variants:</p>
+<p>```tsx
+// src/components/ui/Button.tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+import { forwardRef } from 'react';
+import { cn } from '@/lib/utils';</p>
+<p>const buttonVariants = cva(
+  // Base styles applied to all variants
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-blue-600 text-white hover:bg-blue-700',
+        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+        destructive: 'bg-red-600 text-white hover:bg-red-700',
+        ghost: 'hover:bg-gray-100',
+      },
+      size: {
+        sm: 'h-8 px-3 text-sm',
+        md: 'h-10 px</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

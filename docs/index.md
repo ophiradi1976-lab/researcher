@@ -8,7 +8,9 @@ A living knowledge base of senior-engineer-level research on tools, frameworks, 
 
 ## Tools Covered
 
+- [CLAUDE-CODE](./claude-code/index.md)
 - [DBT](./dbt/index.md)
+- [DISTRIBUTED_SYSTEMS](./distributed_systems/index.md)
 - [GIT](./git/index.md)
 
 ---

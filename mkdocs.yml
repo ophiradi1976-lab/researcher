@@ -20,6 +20,15 @@ markdown_extensions:
 - toc
 nav:
 - Home: index.md
+- CLAUDE-CODE:
+  - Overview: claude-code/index.md
+  - Sources: claude-code/sources.md
+  - Examples:
+    - Claude Md Architecture: claude-code/examples/01_claude_md_architecture.md
+    - Context Aware Refactoring: claude-code/examples/02_context_aware_refactoring.md
+    - Subagent Test Implementation: claude-code/examples/03_subagent_test_implementation.md
+    - Migration Pipeline: claude-code/examples/04_migration_pipeline.md
+    - Legacy Codebase Onboarding: claude-code/examples/05_legacy_codebase_onboarding.md
 - DBT:
   - Overview: dbt/index.md
   - Sources: dbt/sources.md
